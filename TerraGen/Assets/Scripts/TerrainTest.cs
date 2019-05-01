@@ -13,8 +13,8 @@ namespace TerraGen.Test
         [SerializeField] private float amplitude = 20f;
         [SerializeField] private int octives = 1;
         [SerializeField] private float seaLevel;
-        [SerializeField] private float continentSize;
-        [SerializeField] private Vector2 continentCenter;
+        [SerializeField] private float mountainRadius;
+        [SerializeField] private Vector2 mountainCenter;
 
         [SerializeField] private MeshFilter meshFilter;
 
@@ -29,8 +29,8 @@ namespace TerraGen.Test
                 pointData[x] = new float[gridSize + 1];
                 for (int y = 0; y < pointData[x].Length; y++)
                 {
-                    float globalX = x;// lodMultiplier;
-                    float globalY = y;// lodMultiplier;
+                    float globalX = x * lodMultiplier;
+                    float globalY = y * lodMultiplier;
                     for (float o = 1; o <= octives; o++)
                     {
                         var usedFrequency = frequency * o;
@@ -39,7 +39,7 @@ namespace TerraGen.Test
                         pointData[x][y] += Mathf.PerlinNoise(globalX * usedFrequency, globalY * usedFrequency) * usedAmplitude;
                     }
 
-                    pointData[x][y] *= Mathf.Clamp01(continentSize / Vector2.Distance(new Vector2(globalX, globalY), continentCenter));
+                    pointData[x][y] *= Mathf.Clamp01(mountainRadius / Vector2.Distance(new Vector2(globalX, globalY), mountainCenter));
 
                     pointData[x][y] = Mathf.Clamp(pointData[x][y], seaLevel, Mathf.Infinity);
                 }
