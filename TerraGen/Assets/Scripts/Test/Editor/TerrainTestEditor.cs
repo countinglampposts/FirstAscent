@@ -9,10 +9,14 @@ namespace TerraGen.Test
     [CustomEditor(typeof(TerrainTest))]
     public class TerrainTestEditor : Editor
     {
+        private bool generateOnUpdate;
+
         public override void OnInspectorGUI()
         {
+            generateOnUpdate = GUILayout.Toggle(generateOnUpdate, "Generate On Update");
+
             var terrainTest = target as TerrainTest;
-            if (GUILayout.Button("Generate"))
+            if (generateOnUpdate || GUILayout.Button("Generate"))
             {
                 terrainTest.GenerateTerrain();
             }

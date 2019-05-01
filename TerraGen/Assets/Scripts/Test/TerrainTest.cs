@@ -10,7 +10,8 @@ namespace TerraGen.Test
     {
         [SerializeField] private int lod;
         [SerializeField] private int gridSize = 100;
-        [SerializeField] private float seaLevel;
+        [SerializeField] private Vector2 offset;
+        [SerializeField] private float scale = 1f;
         [SerializeField] private PerlinLayerData perlinData;
         [SerializeField] private PointLayerData pointLayerData;
         [SerializeField] private FlatLayerData flatLayerData;
@@ -28,12 +29,13 @@ namespace TerraGen.Test
                 pointData[x] = new float[gridSize + 1];
                 for (int y = 0; y < pointData[x].Length; y++)
                 {
-                    float globalX = x * lodMultiplier;
-                    float globalY = y * lodMultiplier;
+                    float globalX = (x * lodMultiplier + offset.y) / scale;
+                    float globalY = (y * lodMultiplier + offset.y) / scale;
 
                     pointData[x][y] = perlinData.ApplyLayer(globalX, globalY, pointData[x][y]);
                     pointData[x][y] = pointLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
                     pointData[x][y] = flatLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
+                    pointData[x][y] *= scale;
                 }
             }
 
