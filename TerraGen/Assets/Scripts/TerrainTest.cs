@@ -11,7 +11,7 @@ namespace TerraGen.Test
         [SerializeField] private int gridSize = 100;
         [SerializeField] private float frequency = 10f;
         [SerializeField] private float amplitude = 20f;
-        [SerializeField] private int octives = 1;
+        [SerializeField] private int octaves = 1;
         [SerializeField] private float seaLevel;
         [SerializeField] private float mountainRadius;
         [SerializeField] private Vector2 mountainCenter;
@@ -31,7 +31,7 @@ namespace TerraGen.Test
                 {
                     float globalX = x * lodMultiplier;
                     float globalY = y * lodMultiplier;
-                    for (float o = 1; o <= octives; o++)
+                    for (float o = 1; o <= octaves; o++)
                     {
                         var usedFrequency = frequency * o;
                         var usedAmplitude = amplitude / o;
