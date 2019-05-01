@@ -8,7 +8,7 @@ namespace TerraGen.Data
     [System.Serializable]
     public class PerlinLayerData : ITerrainLayer
     {
-        public float frequency = .001f;
+        public float frequency = .0005f;
         public float amplitude = 1000f;
         public int octaves = 5;
 
