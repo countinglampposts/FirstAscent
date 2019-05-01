@@ -29,8 +29,8 @@ namespace TerraGen.Test
                 pointData[x] = new float[gridSize + 1];
                 for (int y = 0; y < pointData[x].Length; y++)
                 {
-                    float globalX = (x * lodMultiplier + offset.y) / scale;
-                    float globalY = (y * lodMultiplier + offset.y) / scale;
+                    float globalX = (x * lodMultiplier) / scale + offset.x * 100;
+                    float globalY = (y * lodMultiplier) / scale + offset.y * 100;
 
                     pointData[x][y] = perlinData.ApplyLayer(globalX, globalY, pointData[x][y]);
                     pointData[x][y] = pointLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
