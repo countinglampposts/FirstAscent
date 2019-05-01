@@ -17,6 +17,7 @@ namespace TerraGen.Generator
             int lodMultiplier = (int)Mathf.Pow(10, terrainData.lod);
 
             Vector3[] verticies = new Vector3[width * height];
+            Vector2[] uvs = new Vector2[verticies.Length];
             int[] triangles = new int[(width - 1) * (height - 1) * 2 * 6];
 
             Thread thread = new Thread(() =>
@@ -25,11 +26,17 @@ namespace TerraGen.Generator
                 {
                     for (int y = 0; y < height; y++)
                     {
-                        Vector3 vertex = new Vector3();
-                        vertex.x = x * lodMultiplier;
-                        vertex.z = y * lodMultiplier;
+                        var uv = new Vector2();
+                        var vertex = new Vector3();
+
+                        uv.x = vertex.x = x * lodMultiplier;
+                        uv.y = vertex.z = y * lodMultiplier;
+
                         vertex.y = terrainData.pointData[x][y];
-                        verticies[x * width + y] = vertex;
+
+                        var index = x * width + y;
+                        verticies[index] = vertex;
+                        uvs[index] = uv;
                     }
                 }
 
@@ -66,6 +73,7 @@ namespace TerraGen.Generator
 
                     mesh.vertices = verticies;
                     mesh.triangles = triangles;
+                    mesh.uv = uvs;
 
                     mesh.RecalculateBounds();
                     mesh.RecalculateNormals();
