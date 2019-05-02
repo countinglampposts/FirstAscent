@@ -14,7 +14,7 @@ namespace TerraGen.Generator
 
             int width = terrainData.pointData.Length;
             int height = terrainData.pointData[0].Length;
-            int lodMultiplier = (int)Mathf.Pow(10, terrainData.lod);
+            int lodMultiplier = (int)Mathf.Pow(2, terrainData.lod);
 
             Vector3[] verticies = new Vector3[width * height];
             Vector2[] uvs = new Vector2[verticies.Length];

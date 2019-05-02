@@ -9,7 +9,7 @@ namespace TerraGen.Test
     public class TerrainTest : MonoBehaviour
     {
         [SerializeField] private int lod;
-        [SerializeField] private int gridSize = 100;
+        [SerializeField] private int gridSize = 256;
         [SerializeField] private float scale = 1f;
         [SerializeField] private PerlinLayerData perlinLayerData;
         [SerializeField] private PointLayerData pointLayerData;
@@ -19,7 +19,7 @@ namespace TerraGen.Test
 
         public void GenerateTerrain()
         {
-            var lodMultiplier = Mathf.Pow(10, lod);
+            var lodMultiplier = Mathf.Pow(2, lod);
 
             float[][] pointData = new float[gridSize + 1][];
 
