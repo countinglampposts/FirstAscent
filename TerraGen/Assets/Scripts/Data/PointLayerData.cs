@@ -12,7 +12,7 @@ namespace TerraGen.Data
 
         public float ApplyLayer(float x, float y, float height)
         {
-            var multiplier = 0f;
+            var multiplier = 1f;
             foreach (var point in points)
             {
                 var distance = Vector2.Distance(new Vector2(x, y), point.center);
