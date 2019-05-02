@@ -15,7 +15,8 @@ namespace TerraGen.Data
             var multiplier = 0f;
             foreach (var point in points)
             {
-                multiplier += Mathf.Clamp01(point.radius / Vector2.Distance(new Vector2(x, y), point.center)) * point.weight;
+                var distance = Vector2.Distance(new Vector2(x, y), point.center);
+                multiplier += Mathf.Lerp(point.weight, 0, distance / point.radius);
             }
             height *= multiplier;
 
