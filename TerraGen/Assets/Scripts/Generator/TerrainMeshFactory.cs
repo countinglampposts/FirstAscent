@@ -2,13 +2,13 @@
 using System.Threading;
 using UniRx;
 using UnityEngine;
-using TerrainData = TerraGen.Data.TerrainData;
+using TerrainMeshData = TerraGen.Data.TerrainMeshData;
 
 namespace TerraGen.Generator
 {
     public class TerrainMeshFactory
     {
-        public IObservable<Mesh> GenerateTerrainMesh(TerrainData terrainData)
+        public IObservable<Mesh> GenerateTerrainMesh(TerrainMeshData terrainData)
         {
             var returned = new Subject<Mesh>();
 

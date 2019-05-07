@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TerraGen.Generator;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TerraGen.Data
+namespace TerraGen.Generator
 {
     [System.Serializable]
-    public class PointLayerData : ITerrainLayer
+    public class FalloffLayer : IFirstPassFilter
     {
-        public float baseWeight = 0f;
-        public PointData[] points;
+        [SerializeField] float baseWeight = 0f;
+        [SerializeField] FalloffPointData[] points;
 
         public float ApplyLayer(float x, float y, float height)
         {
@@ -26,7 +23,7 @@ namespace TerraGen.Data
     }
 
     [System.Serializable]
-    public class PointData
+    public class FalloffPointData
     {
         public float weight = 1f;
         public Vector2 center;

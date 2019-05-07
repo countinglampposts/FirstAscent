@@ -1,19 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TerraGen.Generator;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TerraGen.Data
+namespace TerraGen.Generator
 {
     [System.Serializable]
-    public class PerlinLayerData : ITerrainLayer
+    public class PerlinLayer : IFirstPassFilter
     {
         [Range(0f, 1f)]
+        [SerializeField]
         public float persistance = .5f;
         [Range(1f, 10f)]
-        public float lacunarity = 2f;
-        public int octaves = 5;
-        public int seed;
+        [SerializeField]
+        float lacunarity = 2f;
+        [SerializeField]
+        int octaves = 5;
+        [SerializeField]
+        int seed;
 
         public float ApplyLayer(float x, float y, float height)
         {

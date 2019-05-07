@@ -5,9 +5,10 @@ using UnityEngine;
 namespace TerraGen.Generator
 {
     [System.Serializable]
-    public class FlatLayerData : ITerrainLayer
+    public class FlatLayer : IFirstPassFilter
     {
-        public float altitude;
+        [SerializeField]
+        float altitude;
 
         public float ApplyLayer(float x, float y, float height)
         {

@@ -1,6 +1,6 @@
 ﻿using TerraGen.Generator;
 using UnityEngine;
-using TerrainData = TerraGen.Data.TerrainData;
+using TerrainMeshData = TerraGen.Data.TerrainMeshData;
 using UniRx;
 using TerraGen.Data;
 
@@ -11,9 +11,9 @@ namespace TerraGen.Test
         [SerializeField] private int lod;
         [SerializeField] private int gridSize = 256;
         [SerializeField] private float scale = 1f;
-        [SerializeField] private PerlinLayerData perlinLayerData;
-        [SerializeField] private PointLayerData pointLayerData;
-        [SerializeField] private FlatLayerData flatLayerData;
+        [SerializeField] private PerlinLayer perlinLayerData;
+        [SerializeField] private FalloffLayer pointLayerData;
+        [SerializeField] private FlatLayer flatLayerData;
 
         [SerializeField] private MeshFilter meshFilter;
 
@@ -22,6 +22,7 @@ namespace TerraGen.Test
             var lodMultiplier = Mathf.Pow(2, lod);
 
             float[,] pointData = new float[gridSize + 1, gridSize + 1];
+
             for (int x = 0; x < pointData.GetLength(0); x++)
             {
                 for (int y = 0; y < pointData.GetLength(1); y++)
@@ -32,11 +33,12 @@ namespace TerraGen.Test
                     pointData[x, y] = perlinLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
                     pointData[x, y] = pointLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
                     pointData[x, y] = flatLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
+
                     pointData[x, y] *= scale;
                 }
             }
 
-            TerrainData terrainData = new TerrainData
+            TerrainMeshData terrainData = new TerrainMeshData
             {
                 lod = lod,
                 pointData = pointData

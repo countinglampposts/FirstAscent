@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TerraGen.Generator
 {
-    public interface ITerrainLayer
+    public interface IFirstPassFilter
     {
         float ApplyLayer(float x, float y, float height);
     }
