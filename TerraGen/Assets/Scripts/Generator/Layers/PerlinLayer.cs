@@ -36,8 +36,8 @@ namespace TerraGen.Generator
 
                 height += noiseValue * amplitude;
 
-                amplitude *= persistance;
-                frequency *= lacunarity;
+                amplitude = Mathf.Pow(persistance, o);
+                frequency = Mathf.Pow(lacunarity, o);
             }
 
             return height * scale;
