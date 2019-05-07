@@ -21,20 +21,18 @@ namespace TerraGen.Test
         {
             var lodMultiplier = Mathf.Pow(2, lod);
 
-            float[][] pointData = new float[gridSize + 1][];
-
-            for (int x = 0; x < pointData.Length; x++)
+            float[,] pointData = new float[gridSize + 1, gridSize + 1];
+            for (int x = 0; x < pointData.GetLength(0); x++)
             {
-                pointData[x] = new float[gridSize + 1];
-                for (int y = 0; y < pointData[x].Length; y++)
+                for (int y = 0; y < pointData.GetLength(1); y++)
                 {
                     float globalX = (x * lodMultiplier + transform.position.x) / scale;
                     float globalY = (y * lodMultiplier + transform.position.z) / scale;
 
-                    pointData[x][y] = perlinLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
-                    pointData[x][y] = pointLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
-                    pointData[x][y] = flatLayerData.ApplyLayer(globalX, globalY, pointData[x][y]);
-                    pointData[x][y] *= scale;
+                    pointData[x, y] = perlinLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
+                    pointData[x, y] = pointLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
+                    pointData[x, y] = flatLayerData.ApplyLayer(globalX, globalY, pointData[x, y]);
+                    pointData[x, y] *= scale;
                 }
             }
 

@@ -12,8 +12,8 @@ namespace TerraGen.Generator
         {
             var returned = new Subject<Mesh>();
 
-            int width = terrainData.pointData.Length;
-            int height = terrainData.pointData[0].Length;
+            int width = terrainData.pointData.GetLength(0);
+            int height = terrainData.pointData.GetLength(1);
             int lodMultiplier = (int)Mathf.Pow(2, terrainData.lod);
 
             Vector3[] verticies = new Vector3[width * height];
@@ -32,7 +32,7 @@ namespace TerraGen.Generator
                         uv.x = vertex.x = x * lodMultiplier;
                         uv.y = vertex.z = y * lodMultiplier;
 
-                        vertex.y = terrainData.pointData[x][y];
+                        vertex.y = terrainData.pointData[x, y];
 
                         var index = x * width + y;
                         verticies[index] = vertex;
