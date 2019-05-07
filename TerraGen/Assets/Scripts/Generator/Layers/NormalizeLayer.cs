@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TerraGen.Generator
 {
+    [System.Serializable]
     public class NormalizeLayer : ISecondPassFilter
     {
         [SerializeField] float maxY;

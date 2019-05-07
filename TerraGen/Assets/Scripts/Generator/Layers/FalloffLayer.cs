@@ -14,7 +14,7 @@ namespace TerraGen.Generator
             foreach (var point in points)
             {
                 var distance = Vector2.Distance(new Vector2(x, y), point.center);
-                multiplier += Mathf.Lerp(point.weight, 0f, distance / point.radius);
+                multiplier += Mathf.SmoothStep(point.weight, 0f, distance / point.radius);
             }
             height *= multiplier;
 
