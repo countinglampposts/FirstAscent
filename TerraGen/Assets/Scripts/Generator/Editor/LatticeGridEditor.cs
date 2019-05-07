@@ -9,7 +9,6 @@ namespace TerraGen.Generator
         public override void OnInspectorGUI()
         {
             var latticeGrid = target as LatticeGrid;
-            base.OnInspectorGUI();
             if (GUILayout.Button("Reset"))
                 ResetPoints();
         }

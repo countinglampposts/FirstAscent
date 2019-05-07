@@ -41,7 +41,7 @@ namespace TerraGen.Generator
 
             var p1 = Vector2.Lerp(latticeGrid.points[aIndex], latticeGrid.points[bIndex], xLerp);
             var p2 = Vector2.Lerp(latticeGrid.points[cIndex], latticeGrid.points[dIndex], xLerp);
-            var returned = Vector2.Lerp(p1, p2, yLerp);
+            var returned = Vector2.Lerp(p2, p1, yLerp);
 
             return returned;
         }

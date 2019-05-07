@@ -29,9 +29,11 @@ namespace TerraGen.Test
             {
                 for (int y = 0; y < pointData.GetLength(1); y++)
                 {
-                    float globalX = (x * lodMultiplier + transform.position.x) / scale;
-                    float globalY = (y * lodMultiplier + transform.position.z) / scale;
-                    var globalPosition = latticeLayer.Mutate(new Vector2(globalX, globalY));
+                    var globalPosition = new Vector2(x, y);
+                    globalPosition *= lodMultiplier;
+                    globalPosition += new Vector2(transform.position.x, transform.position.z);
+                    globalPosition /= scale;
+                    globalPosition = latticeLayer.Mutate(globalPosition);
 
                     pointData[x, y] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData[x, y]);
                     pointData[x, y] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData[x, y]);
