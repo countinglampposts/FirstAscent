@@ -33,11 +33,11 @@ namespace TerraGen.Test
 
                     pointData[x, y] = perlinLayer.ApplyLayer(globalX, globalY, pointData[x, y]);
                     pointData[x, y] = falloffLayer.ApplyLayer(globalX, globalY, pointData[x, y]);
+                    pointData[x, y] = flatLayer.ApplyLayer(globalX, globalY, pointData[x, y]);
                 }
             }
 
             pointData = normalizeLayer.ApplyLayer(pointData);
-            pointData = flatLayer.ApplyLayer(pointData);
 
             for (int x = 0; x < pointData.GetLength(0); x++)
             {
