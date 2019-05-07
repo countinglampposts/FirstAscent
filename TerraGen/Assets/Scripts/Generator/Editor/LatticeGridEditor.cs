@@ -8,9 +8,21 @@ namespace TerraGen.Generator
     {
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+
             var latticeGrid = target as LatticeGrid;
+            var gridSize = latticeGrid.gridSize;
+
             if (GUILayout.Button("Reset"))
-                ResetPoints();
+            {
+                Undo.RecordObject(latticeGrid, "Reset lattice");
+                latticeGrid.ResetPoints();
+            }
+            if (GUILayout.Button("Randomize"))
+            {
+                Undo.RecordObject(latticeGrid, "Randomize lattice");
+                latticeGrid.Randomize();
+            }
         }
 
         private void OnSceneGUI()
@@ -22,7 +34,7 @@ namespace TerraGen.Generator
             Vector2[] points;
 
             if (latticeGrid.points == null || latticeGrid.points.Length != totalPointCount)
-                ResetPoints();
+                latticeGrid.ResetPoints();
 
             points = latticeGrid.points;
 
@@ -52,28 +64,6 @@ namespace TerraGen.Generator
                 }
             }
             EditorGUI.EndChangeCheck();
-        }
-
-        private void ResetPoints()
-        {
-            var latticeGrid = target as LatticeGrid;
-            var gridWorldSize = latticeGrid.gridWorldSize;
-            var gridSize = latticeGrid.gridSize;
-            Vector2[] points;
-
-            points = new Vector2[gridSize * gridSize];
-            for (int x = 0; x < gridSize; x++)
-            {
-                for (int y = 0; y < gridSize; y++)
-                {
-                    var worldX = Mathf.Lerp(0, gridWorldSize, (float)x / gridSize);
-                    var worldY = Mathf.Lerp(0, gridWorldSize, (float)y / gridSize);
-                    points[latticeGrid.GridPointToIndex(x, y)] = new Vector2(worldX, worldY);
-                }
-            }
-
-            Undo.RecordObject(target, "Reset lattice data");
-            latticeGrid.points = points;
         }
     }
 }
