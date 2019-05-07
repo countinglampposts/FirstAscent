@@ -6,7 +6,7 @@ namespace TerraGen.Generator
     public class PerlinLayer : IFirstPassFilter
     {
         [SerializeField]
-        float frequency = 1f;
+        float scale = 1f;
         [Range(0f, 1f)]
         [SerializeField]
         float persistance = .5f;
@@ -22,15 +22,15 @@ namespace TerraGen.Generator
         {
             var rnd = new System.Random(seed);
 
-            var frequency = this.frequency;
+            var frequency = 1f;
             var amplitude = 1f;
 
             for (float o = 1; o <= octaves; o++)
             {
                 var offset = new Vector2(rnd.Next(1000), rnd.Next(1000)) / 1000f;
 
-                var sampleX = x * frequency + offset.x;
-                var sampleY = y * frequency + offset.y;
+                var sampleX = (x * frequency + offset.x) / scale;
+                var sampleY = (y * frequency + offset.y) / scale;
 
                 var noiseValue = Mathf.PerlinNoise(sampleX, sampleY);
 
@@ -40,7 +40,7 @@ namespace TerraGen.Generator
                 frequency *= lacunarity;
             }
 
-            return height;
+            return height * scale;
         }
     }
 }
