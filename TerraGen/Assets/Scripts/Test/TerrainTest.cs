@@ -9,7 +9,7 @@ namespace TerraGen.Test
     public class TerrainTest : MonoBehaviour
     {
         [SerializeField] private int lod;
-        [SerializeField] private int gridSize = 256;
+        [SerializeField] private int meshSize = 256;
         [SerializeField] private float scale = 1f;
         [SerializeField] private LatticeLayer latticeLayer;
         [SerializeField] private PerlinLayer perlinLayer;
@@ -22,7 +22,7 @@ namespace TerraGen.Test
         public void GenerateTerrain()
         {
             var lodMultiplier = Mathf.Pow(2, lod);
-            var mapSize = gridSize + 1;
+            var mapSize = meshSize + 1;
 
             TerrainPointData pointData = new TerrainPointData
             {
@@ -40,9 +40,9 @@ namespace TerraGen.Test
                     globalPosition = latticeLayer.Mutate(globalPosition);
                     globalPosition /= scale;
 
-                    pointData.data[y * gridSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
-                    pointData.data[y * gridSize + x] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
-                    pointData.data[y * gridSize + x] = flatLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
+                    pointData.data[y * mapSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
+                    pointData.data[y * mapSize + x] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
+                    pointData.data[y * mapSize + x] = flatLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
                 }
             }
 
@@ -52,7 +52,7 @@ namespace TerraGen.Test
             {
                 for (int y = 0; y < mapSize; y++)
                 {
-                    pointData.data[y * gridSize + x] *= scale;
+                    pointData.data[y * mapSize + x] *= scale;
                 }
             }
 
