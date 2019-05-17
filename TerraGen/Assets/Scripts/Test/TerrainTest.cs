@@ -16,7 +16,6 @@ namespace TerraGen.Test
         [SerializeField] private FalloffLayer falloffLayer;
         [SerializeField] private FlatLayer flatLayer;
         [SerializeField] private NormalizeLayer normalizeLayer;
-        [SerializeField] private Erosion erosion;
 
         [SerializeField] private MeshFilter meshFilter;
 
@@ -43,7 +42,6 @@ namespace TerraGen.Test
             }
 
             pointData = normalizeLayer.ApplyLayer(pointData);
-            pointData = erosion.ApplyLayer(pointData);
 
             for (int x = 0; x < pointData.GetLength(0); x++)
             {
