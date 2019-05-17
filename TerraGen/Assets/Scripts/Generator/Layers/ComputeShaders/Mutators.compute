@@ -1,0 +1,83 @@
+﻿#pragma kernel Whatever
+
+struct LatticeParams{
+    int gridSize;
+    float gridWorldSize;
+    int seed;
+    StructuredBuffer<float2> points;
+};
+
+struct MutatorParams{
+    int lod;
+    float2 position;
+    //bool useLattice;
+    //LatticeParams latticeParams;
+    float scale;
+};
+
+int LatticeGridPointToIndex(int x, int y, int gridSize)
+{
+    return x + y * gridSize;
+}
+
+float2 ApplyLattice(float2 pos, LatticeParams latticeParams)
+{
+    // Determine where it would be on the grid
+    // -right->
+    // a--p1--b ^
+    // |   |  | |
+    // |   x  | up
+    // |   |  | |
+    // c--p2--d |
+    float gridInterval = latticeParams.gridWorldSize / latticeParams.gridSize;
+
+    int upY    = ceil(pos.y / gridInterval);
+    int downY  = floor(pos.y / gridInterval);
+    int leftX  = floor(pos.x / gridInterval);
+    int rightX = ceil(pos.x / gridInterval);
+
+    float xLerp = (pos.x - leftX * gridInterval) / gridInterval;
+    float yLerp = (pos.y - downY * gridInterval) / gridInterval;
+
+    // Determine where it is now on the grid
+    int aIndex = LatticeGridPointToIndex(leftX, upY, latticeParams.gridSize);
+    int bIndex = LatticeGridPointToIndex(rightX, upY, latticeParams.gridSize);
+    int cIndex = LatticeGridPointToIndex(leftX, downY, latticeParams.gridSize);
+    int dIndex = LatticeGridPointToIndex(rightX, downY, latticeParams.gridSize);
+
+    //Determine if it is on the grid
+    if (aIndex < 0 || aIndex >= latticeParams.points.Length)
+        return pos;
+    if (bIndex < 0 || bIndex >= latticeParams.points.Length)
+        return pos;
+    if (cIndex < 0 || cIndex >= latticeParams.points.Length)
+        return pos;
+    if (dIndex < 0 || dIndex >= latticeParams.points.Length)
+        return pos;
+
+    float p1 = lerp(latticeParams.points[aIndex], latticeParams.points[bIndex], xLerp);
+    float p2 = lerp(latticeParams.points[cIndex], latticeParams.points[dIndex], xLerp);
+    float2 returned = lerp(p2, p1, yLerp);
+
+    return returned;
+}
+
+float2 Mutate (float2 pos, MutatorParams mutatorParams)
+{
+    pos *= 2 ^ mutatorParams.lod;
+    pos += mutatorParams.position;
+    
+    //if(mutatorParams.useLattice)
+    //    pos = ApplyLattice(pos, mutatorParams.latticeParams);
+        
+    pos /= mutatorParams.scale;
+    
+    return pos;
+}
+
+[numthreads(1,1,1)]
+void Whatever (uint3 id : SV_DispatchThreadID)
+{
+    float2 pos = (0,0);
+    pos = Mutate(pos, new MutatorParams{lod = 0, position = (0,0), scale = 1});
+}

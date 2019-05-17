@@ -1,7 +1,8 @@
 ﻿#pragma kernel CSMain
 
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/Mutators.compute"
+
 RWStructuredBuffer<float> heightMap;
-RWStructuredBuffer<int> minMax;
 StructuredBuffer<float2> offsets;
 int floatToIntMultiplier;
 
@@ -10,6 +11,8 @@ int octaves;
 float lacunarity;
 float persistence;
 float scaleFactor;
+
+MutatorParams mutatorParams;
 
 // Noise Shader Library for Unity - https://github.com/keijiro/NoiseShader
 //
@@ -99,21 +102,18 @@ float snoise(float2 v)
     return (130.0 * dot(m, g)) * 0.5 + 0.5;
 }
 
-
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    int x = id.x % mapSize;
-    int y = id.x / mapSize;
+    float2 pos = (id.x % mapSize, id.x / mapSize);
+    
+    pos = Mutate(pos,mutatorParams);
 
     float scale = scaleFactor;
     float weight = 1;
     for (int i = 0; i < octaves; i ++) {
-        heightMap[id.x] += snoise(float2(x,y)/mapSize * scale + offsets[i]) * weight;
+        heightMap[id.x] += snoise(pos/mapSize * scale + offsets[i]) * weight;
         scale *= lacunarity;
         weight *= persistence;
     }
-    int val = int(heightMap[id.x] * floatToIntMultiplier);
-    InterlockedMin(minMax[0],val);
-    InterlockedMax(minMax[1],val); 
 }

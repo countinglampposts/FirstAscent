@@ -46,14 +46,14 @@ namespace TerraGen.Generator
             return height * scale;
         }
 
-        public TerrainPointData ApplyLayer(TerrainPointData terrainData)
+        public TerrainPointData ApplyLayer(TerrainPointData terrainData, MutatorParams mutatorParams)
         {
-            var points = GenerateHeightMapGPU(terrainData.mapSize);
+            var points = GeneratePerlin(terrainData);
             terrainData.data = points;
             return terrainData;
         }
 
-        float[] GenerateHeightMapGPU(int mapSize)
+        float[] GeneratePerlin(TerrainPointData terrainData)
         {
             var prng = new System.Random(seed);
 
@@ -67,7 +67,7 @@ namespace TerraGen.Generator
             heightMapComputeShader.SetBuffer(0, "offsets", offsetsBuffer);
 
             int floatToIntMultiplier = 1000;
-            float[] map = new float[mapSize * mapSize];
+            float[] map = terrainData.data;
 
             ComputeBuffer mapBuffer = new ComputeBuffer(map.Length, sizeof(int));
             mapBuffer.SetData(map);
@@ -78,7 +78,7 @@ namespace TerraGen.Generator
             minMaxBuffer.SetData(minMaxHeight);
             heightMapComputeShader.SetBuffer(0, "minMax", minMaxBuffer);
 
-            heightMapComputeShader.SetInt("mapSize", mapSize);
+            heightMapComputeShader.SetInt("mapSize", terrainData.mapSize);
             heightMapComputeShader.SetInt("octaves", octaves);
             heightMapComputeShader.SetFloat("lacunarity", lacunarity);
             heightMapComputeShader.SetFloat("persistence", persistance);

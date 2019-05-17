@@ -8,9 +8,8 @@ namespace TerraGen.Test
 {
     public class TerrainTest : MonoBehaviour
     {
-        [SerializeField] private int lod;
+        [SerializeField] private MutatorParams mutatorParams;
         [SerializeField] private int meshSize = 256;
-        [SerializeField] private float scale = 1f;
         [SerializeField] private LatticeLayer latticeLayer;
         [SerializeField] private PerlinLayer perlinLayer;
         [SerializeField] private FalloffLayer falloffLayer;
@@ -21,7 +20,9 @@ namespace TerraGen.Test
 
         public void GenerateTerrain()
         {
-            var lodMultiplier = Mathf.Pow(2, lod);
+            mutatorParams.position = new Vector2(transform.position.x, transform.position.z);
+
+            var lodMultiplier = Mathf.Pow(2, mutatorParams.lod);
             var mapSize = meshSize + 1;
 
             TerrainPointData pointData = new TerrainPointData
@@ -30,7 +31,7 @@ namespace TerraGen.Test
                 mapSize = mapSize
             };
 
-            pointData = perlinLayer.ApplyLayer(pointData);
+            pointData = perlinLayer.ApplyLayer(pointData, mutatorParams);
 
             for (int x = 0; x < mapSize; x++)
             {
@@ -38,9 +39,9 @@ namespace TerraGen.Test
                 {
                     var globalPosition = new Vector2(x, y);
                     globalPosition *= lodMultiplier;
-                    globalPosition += new Vector2(transform.position.x, transform.position.z);
+                    globalPosition += mutatorParams.position;
                     globalPosition = latticeLayer.Mutate(globalPosition);
-                    globalPosition /= scale;
+                    globalPosition /= mutatorParams.scale;
 
                     //pointData.data[y * mapSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
                     pointData.data[y * mapSize + x] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
@@ -48,19 +49,19 @@ namespace TerraGen.Test
                 }
             }
 
-            pointData = normalizeLayer.ApplyLayer(pointData);
+            pointData = normalizeLayer.ApplyLayer(pointData, mutatorParams);
 
             for (int x = 0; x < mapSize; x++)
             {
                 for (int y = 0; y < mapSize; y++)
                 {
-                    pointData.data[y * mapSize + x] *= scale;
+                    pointData.data[y * mapSize + x] *= mutatorParams.scale;
                 }
             }
 
             TerrainMeshData terrainData = new TerrainMeshData
             {
-                lod = lod,
+                lod = mutatorParams.lod,
                 pointData = pointData
             };
 

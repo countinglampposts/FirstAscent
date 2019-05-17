@@ -11,7 +11,7 @@ namespace TerraGen.Generator
     {
         [SerializeField] float maxY;
 
-        public TerrainPointData ApplyLayer(TerrainPointData terrainData)
+        public TerrainPointData ApplyLayer(TerrainPointData terrainData, MutatorParams mutatorParams)
         {
             var min = float.MaxValue;
             var max = float.MinValue;
