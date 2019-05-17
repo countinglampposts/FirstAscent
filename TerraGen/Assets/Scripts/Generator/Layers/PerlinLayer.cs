@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TerraGen.Data;
+using UnityEngine;
 
 namespace TerraGen.Generator
 {
@@ -45,9 +46,11 @@ namespace TerraGen.Generator
             return height * scale;
         }
 
-        public float[,] ApplyLayer(float[,] terrainData)
+        public TerrainPointData ApplyLayer(TerrainPointData terrainData)
         {
-            throw new System.NotImplementedException();
+            var points = GenerateHeightMapGPU(terrainData.mapSize);
+            terrainData.data = points;
+            return terrainData;
         }
 
         float[] GenerateHeightMapGPU(int mapSize)

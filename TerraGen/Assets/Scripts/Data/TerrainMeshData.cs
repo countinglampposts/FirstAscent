@@ -1,8 +1,14 @@
 ﻿namespace TerraGen.Data
 {
-    public class TerrainMeshData
+    public struct TerrainPointData
     {
-        public float[,] pointData;
+        public float[] data;
+        public int mapSize;
+    }
+
+    public struct TerrainMeshData
+    {
+        public TerrainPointData pointData;
         public int lod;
     }
 }

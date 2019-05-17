@@ -22,12 +22,17 @@ namespace TerraGen.Test
         public void GenerateTerrain()
         {
             var lodMultiplier = Mathf.Pow(2, lod);
+            var mapSize = gridSize + 1;
 
-            float[,] pointData = new float[gridSize + 1, gridSize + 1];
-
-            for (int x = 0; x < pointData.GetLength(0); x++)
+            TerrainPointData pointData = new TerrainPointData
             {
-                for (int y = 0; y < pointData.GetLength(1); y++)
+                data = new float[mapSize * mapSize],
+                mapSize = mapSize
+            };
+
+            for (int x = 0; x < mapSize; x++)
+            {
+                for (int y = 0; y < mapSize; y++)
                 {
                     var globalPosition = new Vector2(x, y);
                     globalPosition *= lodMultiplier;
@@ -35,19 +40,19 @@ namespace TerraGen.Test
                     globalPosition = latticeLayer.Mutate(globalPosition);
                     globalPosition /= scale;
 
-                    pointData[x, y] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData[x, y]);
-                    pointData[x, y] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData[x, y]);
-                    pointData[x, y] = flatLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData[x, y]);
+                    pointData.data[y * gridSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
+                    pointData.data[y * gridSize + x] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
+                    pointData.data[y * gridSize + x] = flatLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * gridSize + x]);
                 }
             }
 
             pointData = normalizeLayer.ApplyLayer(pointData);
 
-            for (int x = 0; x < pointData.GetLength(0); x++)
+            for (int x = 0; x < mapSize; x++)
             {
-                for (int y = 0; y < pointData.GetLength(1); y++)
+                for (int y = 0; y < mapSize; y++)
                 {
-                    pointData[x, y] *= scale;
+                    pointData.data[y * gridSize + x] *= scale;
                 }
             }
 

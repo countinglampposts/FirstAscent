@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TerraGen.Data;
 using UnityEngine;
 
 namespace TerraGen.Generator
 {
     public interface ISecondPassFilter
     {
-        float[,] ApplyLayer(float[,] terrainData);
+        TerrainPointData ApplyLayer(TerrainPointData terrainData);
     }
 }
