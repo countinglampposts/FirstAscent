@@ -7,7 +7,8 @@ namespace TerraGen.Generator
 {
     public class LatticeGrid : MonoBehaviour
     {
-        public LatticeParams latticeParams;
+        public int seed;
+        public LatticeData latticeParams;
 
         public int GridPointToIndex(int x, int y)
         {
@@ -32,7 +33,7 @@ namespace TerraGen.Generator
         {
             ResetPoints();
             var randomRange = Mathf.RoundToInt(latticeParams.gridWorldSize / latticeParams.gridSize) / 2;
-            var rnd = new System.Random(latticeParams.seed);
+            var rnd = new System.Random(seed);
             for (int x = 0; x < latticeParams.gridSize; x++)
             {
                 for (int y = 0; y < latticeParams.gridSize; y++)

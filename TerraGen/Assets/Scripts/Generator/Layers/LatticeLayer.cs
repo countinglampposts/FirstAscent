@@ -53,7 +53,7 @@ namespace TerraGen.Generator
             return returned;
         }
 
-        public LatticeParams GetLatticeParams()
+        public LatticeData GetLatticeData()
         {
             return latticeGrid.latticeParams;
         }

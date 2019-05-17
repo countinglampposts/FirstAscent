@@ -1,0 +1,10 @@
+﻿int lod;
+float2 globalPosition;
+
+float2 PreMutate (float2 pos)
+{
+    pos *= pow(2, lod);
+    pos += globalPosition;
+    
+    return pos;
+}

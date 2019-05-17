@@ -7,6 +7,6 @@ namespace TerraGen.Generator
 {
     public interface ISecondPassFilter
     {
-        TerrainPointData ApplyLayer(TerrainPointData terrainData, MutatorParams mutatorParams);
+        TerrainPointData ApplyLayer(TerrainPointData terrainData, MutatorData mutatorParams);
     }
 }

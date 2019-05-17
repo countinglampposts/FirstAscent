@@ -1,17 +1,10 @@
-﻿#pragma kernel CSMain
+﻿StructuredBuffer<float2> perlin_Offsets;
 
-#include "Assets/Scripts/Generator/Layers/ComputeShaders/Mutators.compute"
-
-RWStructuredBuffer<float> heightMap;
-StructuredBuffer<float2> offsets;
-
-int mapSize;
-int octaves;
-float lacunarity;
-float persistence;
-float scaleFactor;
-
-StructuredBuffer<MutatorParams> mutatorParams;
+int perlin_MapSize;
+int perlin_Octaves;
+float perlin_Lacunarity;
+float perlin_Persistence;
+float perlin_Scale;
 
 // Noise Shader Library for Unity - https://github.com/keijiro/NoiseShader
 //
@@ -101,18 +94,16 @@ float snoise(float2 v)
     return (130.0 * dot(m, g)) * 0.5 + 0.5;
 }
 
-[numthreads(1,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+float Perlin (float2 pos, float height)
 {
-    float2 pos = float2(id.x % mapSize,id.x / mapSize);
-    
-    pos = Mutate(pos,mutatorParams);
-
-    float scale = scaleFactor;
+    float scale = perlin_Scale;
     float weight = 1;
-    for (int i = 0; i < octaves; i ++) {
-        heightMap[id.x] += snoise(pos/mapSize * scale + offsets[i]) * weight;
-        scale *= lacunarity;
-        weight *= persistence;
+    
+    for (int i = 0; i < perlin_Octaves; i ++) {
+        height += snoise(pos/perlin_MapSize * scale + perlin_Offsets[i]) * weight;
+        scale *= perlin_Lacunarity;
+        weight *= perlin_Persistence;
     }
+    
+    return height;
 }

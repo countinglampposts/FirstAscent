@@ -1,0 +1,8 @@
+﻿float globalScale;
+
+float2 PostMutate (float2 pos)
+{
+    pos /= globalScale;
+    
+    return pos;
+}

@@ -1,0 +1,23 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/PreMutator.compute"
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/LatticeMutator.compute"
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/PostMutator.compute"
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/Perlin.compute"
+
+RWStructuredBuffer<float> heightMap;
+
+int mapSize;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float2 pos = float2(id.x % mapSize, id.x / mapSize);
+    
+    pos = PreMutate(pos);
+    pos = LatticeMutate(pos);
+    pos = PostMutate(pos);
+    
+    heightMap[id.x] = Perlin(pos, heightMap[id.x]);
+}
