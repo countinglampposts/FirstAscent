@@ -16,7 +16,7 @@ namespace TerraGen.Generator
 
         public void ResetPoints()
         {
-            latticeParams.points = new Vector2[latticeParams.gridSize ^ 2];
+            latticeParams.points = new Vector2[latticeParams.gridSize * latticeParams.gridSize];
             for (int x = 0; x < latticeParams.gridSize; x++)
             {
                 for (int y = 0; y < latticeParams.gridSize; y++)
