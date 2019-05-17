@@ -98,7 +98,7 @@ namespace TerraGen.Generator
 
             for (int i = 0; i < map.Length; i++)
             {
-                map[i] = Mathf.InverseLerp(minValue, maxValue, map[i]);
+                map[i] = Mathf.InverseLerp(minValue, maxValue, map[i]) * scale;
             }
 
             return map;

@@ -30,6 +30,8 @@ namespace TerraGen.Test
                 mapSize = mapSize
             };
 
+            pointData = perlinLayer.ApplyLayer(pointData);
+
             for (int x = 0; x < mapSize; x++)
             {
                 for (int y = 0; y < mapSize; y++)
@@ -40,7 +42,7 @@ namespace TerraGen.Test
                     globalPosition = latticeLayer.Mutate(globalPosition);
                     globalPosition /= scale;
 
-                    pointData.data[y * mapSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
+                    //pointData.data[y * mapSize + x] = perlinLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
                     pointData.data[y * mapSize + x] = falloffLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
                     pointData.data[y * mapSize + x] = flatLayer.ApplyLayer(globalPosition.x, globalPosition.y, pointData.data[y * mapSize + x]);
                 }
