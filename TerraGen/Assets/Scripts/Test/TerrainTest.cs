@@ -21,6 +21,7 @@ namespace TerraGen.Test
         public void GenerateTerrain()
         {
             mutatorParams.position = new Vector2(transform.position.x, transform.position.z);
+            mutatorParams.latticeParams = latticeLayer.GetLatticeParams();
 
             var lodMultiplier = Mathf.Pow(2, mutatorParams.lod);
             var mapSize = meshSize + 1;

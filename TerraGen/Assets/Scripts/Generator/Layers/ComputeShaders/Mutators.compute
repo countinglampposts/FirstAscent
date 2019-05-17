@@ -2,14 +2,14 @@
     int gridSize;
     float gridWorldSize;
     int seed;
-    StructuredBuffer<float2> points;
+    float2[] points;
 };
 
 struct MutatorParams{
     int lod;
     float2 position;
-    //bool useLattice;
-    //LatticeParams latticeParams;
+    bool useLattice;
+    LatticeParams latticeParams;
     float scale;
 };
 

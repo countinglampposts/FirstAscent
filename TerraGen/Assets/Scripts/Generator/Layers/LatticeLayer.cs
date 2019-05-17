@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TerraGen.Data;
 using UnityEngine;
 
 namespace TerraGen.Generator
@@ -11,6 +12,7 @@ namespace TerraGen.Generator
 
         public Vector2 Mutate(Vector2 pos)
         {
+            var latticeParams = latticeGrid.latticeParams;
             // Determine where it would be on the grid
             // -right->
             // a--p1--b ^
@@ -18,7 +20,7 @@ namespace TerraGen.Generator
             // |   x  | up
             // |   |  | |
             // c--p2--d |
-            var gridInterval = latticeGrid.gridWorldSize / latticeGrid.gridSize;
+            var gridInterval = latticeParams.gridWorldSize / latticeParams.gridSize;
 
             var upY = Mathf.CeilToInt(pos.y / gridInterval);
             var downY = Mathf.FloorToInt(pos.y / gridInterval);
@@ -35,20 +37,25 @@ namespace TerraGen.Generator
             var dIndex = latticeGrid.GridPointToIndex(rightX, downY);
 
             //Determine if it is on the grid
-            if (aIndex < 0 || aIndex >= latticeGrid.points.Length)
+            if (aIndex < 0 || aIndex >= latticeParams.points.Length)
                 return pos;
-            if (bIndex < 0 || bIndex >= latticeGrid.points.Length)
+            if (bIndex < 0 || bIndex >= latticeParams.points.Length)
                 return pos;
-            if (cIndex < 0 || cIndex >= latticeGrid.points.Length)
+            if (cIndex < 0 || cIndex >= latticeParams.points.Length)
                 return pos;
-            if (dIndex < 0 || dIndex >= latticeGrid.points.Length)
+            if (dIndex < 0 || dIndex >= latticeParams.points.Length)
                 return pos;
 
-            var p1 = Vector2.Lerp(latticeGrid.points[aIndex], latticeGrid.points[bIndex], xLerp);
-            var p2 = Vector2.Lerp(latticeGrid.points[cIndex], latticeGrid.points[dIndex], xLerp);
+            var p1 = Vector2.Lerp(latticeParams.points[aIndex], latticeParams.points[bIndex], xLerp);
+            var p2 = Vector2.Lerp(latticeParams.points[cIndex], latticeParams.points[dIndex], xLerp);
             var returned = Vector2.Lerp(p2, p1, yLerp);
 
             return returned;
+        }
+
+        public LatticeParams GetLatticeParams()
+        {
+            return latticeGrid.latticeParams;
         }
     }
 }

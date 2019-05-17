@@ -8,7 +8,7 @@ namespace TerraGen.Data
         public int gridSize;
         public float gridWorldSize;
         public int seed;
-        public Vector2[] points;
+        [HideInInspector] public Vector2[] points;
     }
 
     [System.Serializable]
@@ -16,8 +16,8 @@ namespace TerraGen.Data
     {
         public int lod;
         [HideInInspector] public Vector2 position;
-        //public bool useLattice;
-        //public LatticeParams latticeParams;
+        public bool useLattice;
+        [HideInInspector] public LatticeParams latticeParams;
         public float scale;
     }
 }

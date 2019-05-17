@@ -73,7 +73,7 @@ namespace TerraGen.Generator
             heightMapComputeShader.SetBuffer(0, "heightMap", mapBuffer);
 
             var mutatorParamsArray = new MutatorParams[] { mutatorParams };
-            ComputeBuffer mutatorBuffer = new ComputeBuffer(1, sizeof(int) + sizeof(float) * 3);
+            ComputeBuffer mutatorBuffer = new ComputeBuffer(1, GetMutatorParamsSize(mutatorParams));
             mutatorBuffer.SetData(mutatorParamsArray);
             heightMapComputeShader.SetBuffer(0, "mutatorParams", mutatorBuffer);
 
@@ -92,6 +92,14 @@ namespace TerraGen.Generator
             mutatorBuffer.Release();
 
             return map;
+        }
+
+        private int GetMutatorParamsSize(MutatorParams mutatorParams)
+        {
+            int topLevelSize = sizeof(int) + sizeof(float) * 3 + sizeof(bool);
+            int bottomLevelSize = sizeof(int) * 2 + sizeof(float) + (sizeof(float) * 2) * mutatorParams.latticeParams.points.Length;
+
+            return topLevelSize + bottomLevelSize;
         }
     }
 }
