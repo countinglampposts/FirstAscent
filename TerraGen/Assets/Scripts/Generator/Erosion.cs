@@ -41,7 +41,17 @@ namespace TerraGen.Generator
 
         public float[,] ApplyLayer(float[,] terrainData)
         {
-            float[] usedMap = terrainData.Cast<float>().ToArray();
+            //float[] usedMap = terrainData.Cast<float>().ToArray();
+            float[] usedMap = new float[terrainData.Length];
+
+            for (int x = 0; x < terrainData.GetLength(0); x++)
+            {
+                for (int y = 0; y < terrainData.GetLength(1); y++)
+                {
+                    usedMap[y * terrainData.GetLength(0) + x] = terrainData[x, y];
+                }
+            }
+
             Erode(usedMap, terrainData.GetLength(0));
             for (int x = 0; x < terrainData.GetLength(0); x++)
             {
