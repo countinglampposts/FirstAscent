@@ -4,7 +4,6 @@
 
 RWStructuredBuffer<float> heightMap;
 StructuredBuffer<float2> offsets;
-int floatToIntMultiplier;
 
 int mapSize;
 int octaves;
@@ -12,7 +11,7 @@ float lacunarity;
 float persistence;
 float scaleFactor;
 
-MutatorParams mutatorParams;
+StructuredBuffer<MutatorParams> mutatorParams;
 
 // Noise Shader Library for Unity - https://github.com/keijiro/NoiseShader
 //
@@ -105,7 +104,7 @@ float snoise(float2 v)
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    float2 pos = (id.x % mapSize, id.x / mapSize);
+    float2 pos = float2(id.x % mapSize,id.x / mapSize);
     
     pos = Mutate(pos,mutatorParams);
 

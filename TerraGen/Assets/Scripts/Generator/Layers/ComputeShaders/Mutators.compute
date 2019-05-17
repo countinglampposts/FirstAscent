@@ -1,6 +1,4 @@
-﻿#pragma kernel Whatever
-
-struct LatticeParams{
+﻿struct LatticeParams{
     int gridSize;
     float gridWorldSize;
     int seed;
@@ -62,22 +60,17 @@ float2 ApplyLattice(float2 pos, LatticeParams latticeParams)
     return returned;
 }
 
-float2 Mutate (float2 pos, MutatorParams mutatorParams)
+float2 Mutate (float2 pos, StructuredBuffer<MutatorParams> mutatorParams)
 {
-    pos *= 2 ^ mutatorParams.lod;
-    pos += mutatorParams.position;
+    MutatorParams params = mutatorParams[0];
     
-    //if(mutatorParams.useLattice)
-    //    pos = ApplyLattice(pos, mutatorParams.latticeParams);
+    pos *= 2 ^ params.lod;
+    pos += params.position;
+    
+    //if(params.useLattice)
+    //    pos = ApplyLattice(pos, params.latticeParams);
         
-    pos /= mutatorParams.scale;
+    pos /= params.scale;
     
     return pos;
-}
-
-[numthreads(1,1,1)]
-void Whatever (uint3 id : SV_DispatchThreadID)
-{
-    float2 pos = (0,0);
-    pos = Mutate(pos, new MutatorParams{lod = 0, position = (0,0), scale = 1});
 }

@@ -48,12 +48,12 @@ namespace TerraGen.Generator
 
         public TerrainPointData ApplyLayer(TerrainPointData terrainData, MutatorParams mutatorParams)
         {
-            var points = GeneratePerlin(terrainData);
+            var points = GeneratePerlin(terrainData, mutatorParams);
             terrainData.data = points;
             return terrainData;
         }
 
-        float[] GeneratePerlin(TerrainPointData terrainData)
+        float[] GeneratePerlin(TerrainPointData terrainData, MutatorParams mutatorParams)
         {
             var prng = new System.Random(seed);
 
@@ -66,40 +66,30 @@ namespace TerraGen.Generator
             offsetsBuffer.SetData(offsets);
             heightMapComputeShader.SetBuffer(0, "offsets", offsetsBuffer);
 
-            int floatToIntMultiplier = 1000;
             float[] map = terrainData.data;
 
             ComputeBuffer mapBuffer = new ComputeBuffer(map.Length, sizeof(int));
             mapBuffer.SetData(map);
             heightMapComputeShader.SetBuffer(0, "heightMap", mapBuffer);
 
-            int[] minMaxHeight = { floatToIntMultiplier * octaves, 0 };
-            ComputeBuffer minMaxBuffer = new ComputeBuffer(minMaxHeight.Length, sizeof(int));
-            minMaxBuffer.SetData(minMaxHeight);
-            heightMapComputeShader.SetBuffer(0, "minMax", minMaxBuffer);
+            var mutatorParamsArray = new MutatorParams[] { mutatorParams };
+            ComputeBuffer mutatorBuffer = new ComputeBuffer(1, sizeof(int) + sizeof(float) * 3);
+            mutatorBuffer.SetData(mutatorParamsArray);
+            heightMapComputeShader.SetBuffer(0, "mutatorParams", mutatorBuffer);
 
+            //TODO: Find a way to set the mutator params
             heightMapComputeShader.SetInt("mapSize", terrainData.mapSize);
             heightMapComputeShader.SetInt("octaves", octaves);
             heightMapComputeShader.SetFloat("lacunarity", lacunarity);
             heightMapComputeShader.SetFloat("persistence", persistance);
             heightMapComputeShader.SetFloat("scaleFactor", scale);
-            heightMapComputeShader.SetInt("floatToIntMultiplier", floatToIntMultiplier);
 
             heightMapComputeShader.Dispatch(0, map.Length, 1, 1);
 
             mapBuffer.GetData(map);
-            minMaxBuffer.GetData(minMaxHeight);
             mapBuffer.Release();
-            minMaxBuffer.Release();
             offsetsBuffer.Release();
-
-            float minValue = (float)minMaxHeight[0] / (float)floatToIntMultiplier;
-            float maxValue = (float)minMaxHeight[1] / (float)floatToIntMultiplier;
-
-            for (int i = 0; i < map.Length; i++)
-            {
-                map[i] = Mathf.InverseLerp(minValue, maxValue, map[i]) * scale;
-            }
+            mutatorBuffer.Release();
 
             return map;
         }
