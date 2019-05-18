@@ -30,13 +30,12 @@ namespace TerraGen.Data
     {
         public int lod;
         [HideInInspector] public Vector2 position;
-        public float scale;
 
         public IDisposable ApplyToShader(ShaderLayerParams layerParams, ComputeShader computeShader)
         {
             computeShader.SetInt("lod", lod);
             computeShader.SetVector("globalPosition", position);
-            computeShader.SetFloat("globalScale", scale);
+            computeShader.SetFloat("globalScale", layerParams.globalScale);
 
             return Disposable.Empty;
         }

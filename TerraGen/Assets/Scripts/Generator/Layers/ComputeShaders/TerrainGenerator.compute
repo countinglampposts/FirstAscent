@@ -1,5 +1,5 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSMain
+#pragma kernel Generate
 
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/PreMutator.compute"
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/LatticeMutator.compute"
@@ -8,11 +8,17 @@
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/Falloff.compute"
 
 RWStructuredBuffer<float> heightMap;
-
+RWStructuredBuffer<int> minMax;
 int mapSize;
 
+void SaveMinMax(float height){
+    int val = height * 1000;
+    InterlockedMin(minMax[0], val);
+    InterlockedMax(minMax[1], val); 
+}
+
 [numthreads(1,1,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void Generate (uint3 id : SV_DispatchThreadID)
 {
     float2 pos = float2(id.x % mapSize, id.x / mapSize);
     
@@ -22,4 +28,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     
     heightMap[id.x] = Perlin(pos, heightMap[id.x]);
     heightMap[id.x] = Falloff(pos, heightMap[id.x]);
+    SaveMinMax(heightMap[id.x]);
 }
+

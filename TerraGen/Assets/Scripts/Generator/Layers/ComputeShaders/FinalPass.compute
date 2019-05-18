@@ -1,0 +1,15 @@
+﻿#pragma kernel FinalPass
+
+RWStructuredBuffer<float> lastPass_HeightMap;
+RWStructuredBuffer<int> lastPass_MinMax;
+float lastPass_MaxHeight;
+float lastPass_GlobalScale;
+
+[numthreads(1,1,1)]
+void FinalPass (uint3 id : SV_DispatchThreadID)
+{ 
+    float minValue = lastPass_MinMax[0]/1000;
+    float maxValue = lastPass_MinMax[1]/1000;
+    float lerpValue = (lastPass_HeightMap[id.x] - minValue)/(maxValue - minValue);
+    lastPass_HeightMap[id.x] = lerp(0,lastPass_MaxHeight,lerpValue) * lastPass_GlobalScale;
+}
