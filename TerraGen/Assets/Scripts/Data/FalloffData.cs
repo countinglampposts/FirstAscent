@@ -14,22 +14,9 @@ namespace TerraGen.Generator
     }
 
     [System.Serializable]
-    public class FalloffLayer : IFirstPassFilter, IShaderLayer
+    public class FalloffData : IShaderLayer
     {
         [SerializeField] FalloffPointData[] points;
-
-        public float ApplyLayer(float x, float y, float height)
-        {
-            var multiplier = 0f;
-            foreach (var point in points)
-            {
-                var distance = Vector2.Distance(new Vector2(x, y), point.center);
-                multiplier += Mathf.SmoothStep(point.weight, 0f, distance / point.radius);
-            }
-            height *= multiplier;
-
-            return height;
-        }
 
         public IDisposable ApplyToShader(ShaderLayerParams layerParams, ComputeShader computeShader)
         {

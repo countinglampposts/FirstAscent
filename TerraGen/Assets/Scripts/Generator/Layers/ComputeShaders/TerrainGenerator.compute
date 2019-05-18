@@ -30,4 +30,3 @@ void Generate (uint3 id : SV_DispatchThreadID)
     heightMap[id.x] = Falloff(pos, heightMap[id.x]);
     SaveMinMax(heightMap[id.x]);
 }
-

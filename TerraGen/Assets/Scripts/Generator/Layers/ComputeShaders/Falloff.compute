@@ -1,6 +1,6 @@
 ﻿StructuredBuffer<float> falloff_Weights;
 StructuredBuffer<float2> falloff_Centers;
-StructuredBuffer<float2> falloff_Radiuses;
+StructuredBuffer<float> falloff_Radiuses;
 int falloff_Count;
 
 float Falloff (float2 pos, float height)
