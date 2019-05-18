@@ -5,6 +5,7 @@
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/LatticeMutator.compute"
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/PostMutator.compute"
 #include "Assets/Scripts/Generator/Layers/ComputeShaders/Perlin.compute"
+#include "Assets/Scripts/Generator/Layers/ComputeShaders/Falloff.compute"
 
 RWStructuredBuffer<float> heightMap;
 
@@ -16,8 +17,9 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float2 pos = float2(id.x % mapSize, id.x / mapSize);
     
     pos = PreMutate(pos);
-    pos = LatticeMutate(pos);
+    //pos = LatticeMutate(pos);
     pos = PostMutate(pos);
     
     heightMap[id.x] = Perlin(pos, heightMap[id.x]);
+    heightMap[id.x] = Falloff(pos, heightMap[id.x]);
 }

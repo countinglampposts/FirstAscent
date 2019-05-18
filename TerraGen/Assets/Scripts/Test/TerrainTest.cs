@@ -42,6 +42,8 @@ namespace TerraGen.Test
                 .AddTo(shaderDisposables);
             latticeLayer.GetLatticeData().ApplyToShader(shaderParams, terrainComputeShader)
                 .AddTo(shaderDisposables);
+            falloffLayer.ApplyToShader(shaderParams, terrainComputeShader)
+                .AddTo(shaderDisposables);
 
             ComputeBuffer mapBuffer = new ComputeBuffer(pointData.data.Length, sizeof(int));
             mapBuffer.SetData(pointData.data);

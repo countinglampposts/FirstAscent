@@ -1,0 +1,18 @@
+﻿StructuredBuffer<float> falloff_Weights;
+StructuredBuffer<float2> falloff_Centers;
+StructuredBuffer<float2> falloff_Radiuses;
+int falloff_Count;
+
+float Falloff (float2 pos, float height)
+{
+    float multiplier = 0; 
+    
+    for(int a = 0;a < falloff_Count;a++)
+    {
+        float pDistance = distance(pos, falloff_Centers[a]);
+        multiplier += smoothstep(falloff_Weights[a], 0, pDistance / falloff_Radiuses[a]);
+    }
+    height *= multiplier;
+
+    return height;
+}
