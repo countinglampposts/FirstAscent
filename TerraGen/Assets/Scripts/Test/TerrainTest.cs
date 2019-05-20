@@ -65,7 +65,7 @@ namespace TerraGen.Test
             Disposable.Create(minMaxBuffer.Release)
                 .AddTo(shaderDisposables);
 
-            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), pointData.data.Length / 1024, 1, 1);
+            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), pointData.data.Length, 1, 1);
 
             mapBuffer.GetData(pointData.data);
             minMaxBuffer.GetData(minMax);
@@ -86,7 +86,7 @@ namespace TerraGen.Test
 
             finalPassComputeShader.SetFloat("lastPass_GlobalScale", globalScale);
 
-            finalPassComputeShader.Dispatch(0, pointData.data.Length / 1024, 1, 1);
+            finalPassComputeShader.Dispatch(0, pointData.data.Length, 1, 1);
 
             finalMapBuffer.GetData(pointData.data);
 
