@@ -7,7 +7,6 @@ namespace TerraGen.Generator
 {
     public class ShaderLayerParams
     {
-        public int mapSize;
         public float globalScale;
     }
 

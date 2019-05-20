@@ -25,7 +25,6 @@ namespace TerraGen.Data
 
         public IDisposable ApplyToShader(ShaderLayerParams layerParams, ComputeShader computeShader)
         {
-            computeShader.SetInt("perlin_MapSize", layerParams.mapSize);
             computeShader.SetInt("perlin_Octaves", octaves);
             computeShader.SetFloat("perlin_Lacunarity", lacunarity);
             computeShader.SetFloat("perlin_Persistence", persistance);

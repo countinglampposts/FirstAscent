@@ -1,6 +1,5 @@
 ﻿StructuredBuffer<float2> perlin_Offsets;
 
-int perlin_MapSize;
 int perlin_Octaves;
 float perlin_Lacunarity;
 float perlin_Persistence;
@@ -100,7 +99,7 @@ float Perlin (float2 pos, float height)
     float weight = 100;
     
     for (int i = 0; i < perlin_Octaves; i ++) {
-        height += snoise(pos/perlin_MapSize * scale + perlin_Offsets[i]) * weight;
+        height += snoise(pos/256 * scale + perlin_Offsets[i]) * weight;
         scale *= perlin_Lacunarity;
         weight *= perlin_Persistence;
     }

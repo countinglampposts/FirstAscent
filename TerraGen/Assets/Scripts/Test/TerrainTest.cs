@@ -40,7 +40,6 @@ namespace TerraGen.Test
 
             var shaderParams = new ShaderLayerParams
             {
-                mapSize = mapSize,
                 globalScale = globalScale
             };
 
