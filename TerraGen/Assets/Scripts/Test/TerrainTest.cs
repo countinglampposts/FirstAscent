@@ -11,7 +11,7 @@ namespace TerraGen.Test
         [SerializeField] private ComputeShader terrainComputeShader;
         [SerializeField] private ComputeShader finalPassComputeShader;
 
-        [SerializeField] private int meshSize = 256;
+        [SerializeField] private int mapSize = 256;
         [SerializeField] private float maxHeight = 8000f;
         [SerializeField] private float globalScale = 1f;
         [SerializeField] private LatticeGrid latticeGrid;
@@ -26,7 +26,6 @@ namespace TerraGen.Test
             mutatorData.position = new Vector2(transform.position.x, transform.position.z);
 
             var lodMultiplier = Mathf.Pow(2, mutatorData.lod);
-            var mapSize = meshSize + 1;
 
             TerrainPointData pointData = new TerrainPointData
             {
@@ -69,22 +68,23 @@ namespace TerraGen.Test
 
             mapBuffer.GetData(pointData.data);
             minMaxBuffer.GetData(minMax);
+            Debug.Log("Min: " + minMax[0] + "\nMax: " + minMax[1]);
 
             ComputeBuffer finalMinMaxBuffer = new ComputeBuffer(minMax.Length, sizeof(int));
             finalMinMaxBuffer.SetData(minMax);
-            finalPassComputeShader.SetBuffer(0, "lastPass_MinMax", finalMinMaxBuffer);
+            finalPassComputeShader.SetBuffer(0, "finalPass_MinMax", finalMinMaxBuffer);
             Disposable.Create(finalMinMaxBuffer.Release)
                 .AddTo(shaderDisposables);
 
             ComputeBuffer finalMapBuffer = new ComputeBuffer(pointData.data.Length, sizeof(float));
             finalMapBuffer.SetData(pointData.data);
-            finalPassComputeShader.SetBuffer(0, "lastPass_HeightMap", finalMapBuffer);
+            finalPassComputeShader.SetBuffer(0, "finalPass_HeightMap", finalMapBuffer);
             Disposable.Create(finalMapBuffer.Release)
                 .AddTo(shaderDisposables);
 
-            finalPassComputeShader.SetFloat("lastPass_MaxHeight", maxHeight);
+            finalPassComputeShader.SetFloat("finalPass_MaxHeight", maxHeight);
 
-            finalPassComputeShader.SetFloat("lastPass_GlobalScale", globalScale);
+            finalPassComputeShader.SetFloat("finalPass_GlobalScale", globalScale);
 
             finalPassComputeShader.Dispatch(0, pointData.data.Length, 1, 1);
 

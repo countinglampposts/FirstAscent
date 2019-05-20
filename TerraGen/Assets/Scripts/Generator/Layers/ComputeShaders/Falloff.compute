@@ -9,10 +9,9 @@ float Falloff (float2 pos, float height)
     
     for(int a = 0;a < falloff_Count;a++)
     {
-        float pDistance = distance(pos, falloff_Centers[a]);
-        multiplier += smoothstep(falloff_Weights[a], 0, pDistance / falloff_Radiuses[a]);
+        float pLerp = distance(pos, falloff_Centers[a]) / falloff_Radiuses[a];
+        multiplier += smoothstep(falloff_Weights[a], 0, pLerp );
     }
-    height *= multiplier;
-
-    return height;
+    
+    return height * multiplier;
 }
