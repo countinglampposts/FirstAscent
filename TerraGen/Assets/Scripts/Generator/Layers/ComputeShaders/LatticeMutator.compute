@@ -42,8 +42,8 @@ float2 ApplyLattice(float2 pos)
     if (dIndex < 0 || dIndex >= lattice_Points.Length)
         return pos;*/
 
-    float p1 = lerp(lattice_Points[aIndex], lattice_Points[bIndex], xLerp);
-    float p2 = lerp(lattice_Points[cIndex], lattice_Points[dIndex], xLerp);
+    float2 p1 = lerp(lattice_Points[aIndex], lattice_Points[bIndex], xLerp);
+    float2 p2 = lerp(lattice_Points[cIndex], lattice_Points[dIndex], xLerp);
     float2 returned = lerp(p2, p1, yLerp);
 
     return returned;
