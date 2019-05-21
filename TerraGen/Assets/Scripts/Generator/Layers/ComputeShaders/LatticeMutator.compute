@@ -100,20 +100,11 @@ float2 ApplyLattice2(float2 pos)
     float bWeight = distance(pos,bBasePos);
     float cWeight = distance(pos,cBasePos);
     float dWeight = distance(pos,dBasePos);
-    
-    if(aWeight == 0)
-        return pos + aOffset;
-    if(bWeight == 0)
-        return pos + bOffset;
-    if(cWeight == 0)
-        return pos + cOffset;
-    if(dWeight == 0)
-        return pos + dOffset;
         
-    aWeight = 1 / aWeight;
-    bWeight = 1 / bWeight;
-    cWeight = 1 / cWeight;
-    dWeight = 1 / dWeight;
+    aWeight = clamp( 1 / aWeight,0,10000);
+    bWeight = clamp( 1 / bWeight,0,10000);
+    cWeight = clamp( 1 / cWeight,0,10000);
+    dWeight = clamp( 1 / dWeight,0,10000);
     
     float total = aWeight + bWeight + cWeight + dWeight;
     

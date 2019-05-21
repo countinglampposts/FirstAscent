@@ -89,7 +89,7 @@ namespace TerraGen.Test
             Disposable.Create(minMaxBuffer.Release)
                 .AddTo(disposables);
 
-            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), heightMap.Length, 1, 1);
+            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), heightMap.Length / 1024, 1, 1);
 
             mapBuffer.GetData(heightMap);
             minMaxBuffer.GetData(minMax);
@@ -117,7 +117,7 @@ namespace TerraGen.Test
 
             finalPassComputeShader.SetFloat("finalPass_GlobalScale", globalScale);
 
-            finalPassComputeShader.Dispatch(0, heightMap.Length, 1, 1);
+            finalPassComputeShader.Dispatch(0, heightMap.Length / 1024, 1, 1);
 
             finalMapBuffer.GetData(heightMap);
 

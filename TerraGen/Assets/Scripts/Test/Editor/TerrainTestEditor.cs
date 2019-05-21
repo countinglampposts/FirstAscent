@@ -18,7 +18,11 @@ namespace TerraGen.Test
             var terrainTest = target as TerrainTest;
             if (generateOnUpdate || GUILayout.Button("Generate"))
             {
+                var sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
                 terrainTest.GenerateTerrain();
+                sw.Stop();
+                Debug.Log("Terrain generated in time: " + sw.ElapsedMilliseconds + "ms");
             }
             base.OnInspectorGUI();
         }
