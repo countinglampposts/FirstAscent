@@ -9,13 +9,15 @@ namespace TerraGen.Data
     public struct LatticeData : IShaderLayer
     {
         public int gridSize;
-        public float gridWorldSize;
+        public int gridLOD;
         [HideInInspector] public Vector2[] points;
 
         public IDisposable ApplyToShader(ShaderLayerParams layerParams, ComputeShader computeShader)
         {
+            var gridInterval = (int)Mathf.Pow(2f, (float)gridLOD);
+
             computeShader.SetInt("lattice_GridSize", gridSize);
-            computeShader.SetFloat("lattice_GridWorldSize", gridWorldSize);
+            computeShader.SetInt("lattice_GridInterval", gridInterval);
 
             ComputeBuffer pointsBuffer = new ComputeBuffer(points.Length, sizeof(float) * 2);
             pointsBuffer.SetData(points);

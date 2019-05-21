@@ -1,8 +1,8 @@
 ﻿int lattice_GridSize;
-float lattice_GridWorldSize;
+int lattice_GridInterval;
 StructuredBuffer<float2> lattice_Points;
 
-int LatticeGridPointToIndex(int x, int y)
+int LatticePointToIndex(int x, int y)
 {
     return x + y * lattice_GridSize;
 }
@@ -16,21 +16,20 @@ float2 ApplyLattice(float2 pos)
     // |   x  | up
     // |   |  | |
     // c--p2--d |
-    float gridInterval = lattice_GridWorldSize / lattice_GridSize;
+    
+    int upY    = ceil(pos.y / lattice_GridInterval);
+    int downY  = floor(pos.y / lattice_GridInterval);
+    int leftX  = floor(pos.x / lattice_GridInterval);
+    int rightX = ceil(pos.x / lattice_GridInterval);
 
-    int upY    = ceil(pos.y / gridInterval);
-    int downY  = floor(pos.y / gridInterval);
-    int leftX  = floor(pos.x / gridInterval);
-    int rightX = ceil(pos.x / gridInterval);
-
-    float xLerp = (pos.x - leftX * gridInterval) / gridInterval;
-    float yLerp = (pos.y - downY * gridInterval) / gridInterval;
+    float xLerp = (pos.x - leftX * lattice_GridInterval) / lattice_GridInterval;
+    float yLerp = (pos.y - downY * lattice_GridInterval) / lattice_GridInterval;
 
     // Determine where it is now on the grid
-    int aIndex = LatticeGridPointToIndex(leftX, upY);
-    int bIndex = LatticeGridPointToIndex(rightX, upY);
-    int cIndex = LatticeGridPointToIndex(leftX, downY);
-    int dIndex = LatticeGridPointToIndex(rightX, downY);
+    int aIndex = LatticePointToIndex(leftX, upY);
+    int bIndex = LatticePointToIndex(rightX, upY);
+    int cIndex = LatticePointToIndex(leftX, downY);
+    int dIndex = LatticePointToIndex(rightX, downY);
     
     //Determine if it is on the grid
     int pointsCount = lattice_GridSize * lattice_GridSize;
@@ -48,6 +47,84 @@ float2 ApplyLattice(float2 pos)
     float2 returned = lerp(p2, p1, yLerp);
 
     return returned;
+}
+
+float2 LatticePointToWorldPos(int x, int y)
+{
+    return float2(x * lattice_GridInterval, y * lattice_GridInterval);
+}
+
+float2 ApplyLattice2(float2 pos)
+{
+    // Determine where it would be on the grid
+    // -right->
+    // a--p1--b ^
+    // |   |  | |
+    // |   x  | up
+    // |   |  | |
+    // c--p2--d |
+    
+    int upY    = ceil(pos.y / lattice_GridInterval);
+    int downY  = floor(pos.y / lattice_GridInterval);
+    int leftX  = floor(pos.x / lattice_GridInterval);
+    int rightX = ceil(pos.x / lattice_GridInterval);
+
+    // Determine where it is now on the grid
+    int aIndex = LatticePointToIndex(leftX, upY);
+    int bIndex = LatticePointToIndex(rightX, upY);
+    int cIndex = LatticePointToIndex(leftX, downY);
+    int dIndex = LatticePointToIndex(rightX, downY);
+    
+    //Determine if it is on the grid
+    int pointsCount = lattice_GridSize * lattice_GridSize;
+    if (aIndex < 0 || aIndex >= pointsCount)
+        return pos;
+    if (bIndex < 0 || bIndex >= pointsCount)
+        return pos;
+    if (cIndex < 0 || cIndex >= pointsCount)
+        return pos;
+    if (dIndex < 0 || dIndex >= pointsCount)
+        return pos;
+        
+    float2 aBasePos = LatticePointToWorldPos(leftX, upY);
+    float2 bBasePos = LatticePointToWorldPos(rightX, upY);
+    float2 cBasePos = LatticePointToWorldPos(leftX, downY);
+    float2 dBasePos = LatticePointToWorldPos(rightX, downY);
+    
+    float2 aOffset = lattice_Points[aIndex] - aBasePos;
+    float2 bOffset = lattice_Points[bIndex] - bBasePos;
+    float2 cOffset = lattice_Points[cIndex] - cBasePos;
+    float2 dOffset = lattice_Points[dIndex] - dBasePos;
+    
+    float aWeight = distance(pos,aBasePos);
+    float bWeight = distance(pos,bBasePos);
+    float cWeight = distance(pos,cBasePos);
+    float dWeight = distance(pos,dBasePos);
+    
+    if(aWeight == 0)
+        return pos + aOffset;
+    if(bWeight == 0)
+        return pos + bOffset;
+    if(cWeight == 0)
+        return pos + cOffset;
+    if(dWeight == 0)
+        return pos + dOffset;
+        
+    aWeight = 1 / aWeight;
+    bWeight = 1 / bWeight;
+    cWeight = 1 / cWeight;
+    dWeight = 1 / dWeight;
+    
+    float total = aWeight + bWeight + cWeight + dWeight;
+    
+    aWeight = aWeight / total;
+    bWeight = bWeight / total;
+    cWeight = cWeight / total;
+    dWeight = dWeight / total;
+    
+    float2 offset = aOffset * aWeight + bOffset * bWeight + cOffset * cWeight + dOffset * dWeight;
+    
+    return pos + offset;
 }
 
 float2 LatticeMutate (float2 pos)

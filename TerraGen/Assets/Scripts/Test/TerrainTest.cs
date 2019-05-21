@@ -47,7 +47,7 @@ namespace TerraGen.Test
                 .AddTo(shaderDisposables);
             mutatorData.ApplyToShader(shaderParams, terrainComputeShader)
                 .AddTo(shaderDisposables);
-            latticeGrid.latticeParams.ApplyToShader(shaderParams, terrainComputeShader)
+            latticeGrid.latticeData.ApplyToShader(shaderParams, terrainComputeShader)
                 .AddTo(shaderDisposables);
             falloffData.ApplyToShader(shaderParams, terrainComputeShader)
                 .AddTo(shaderDisposables);

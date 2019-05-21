@@ -11,7 +11,7 @@ namespace TerraGen.Generator
             base.OnInspectorGUI();
 
             var latticeGrid = target as LatticeGrid;
-            var gridSize = latticeGrid.latticeParams.gridSize;
+            var gridSize = latticeGrid.latticeData.gridSize;
 
             if (GUILayout.Button("Reset"))
             {
@@ -28,9 +28,9 @@ namespace TerraGen.Generator
         private void OnSceneGUI()
         {
             var latticeGrid = target as LatticeGrid;
-            var latticeParams = latticeGrid.latticeParams;
+            var latticeParams = latticeGrid.latticeData;
 
-            var gridWorldSize = latticeParams.gridWorldSize;
+            var gridWorldSize = latticeParams.gridLOD;
             var gridSize = latticeParams.gridSize;
             var totalPointCount = gridSize * gridSize;
             Vector2[] points;
