@@ -9,8 +9,11 @@ namespace TerraGen.Test
 {
     public class TerrainTest : MonoBehaviour
     {
+        [SerializeField] private bool useComputeShader;
+
         [SerializeField] private ComputeShader terrainComputeShader;
         [SerializeField] private ComputeShader finalPassComputeShader;
+        [SerializeField] private ComputeShader meshMakerComputeShader;
 
         [SerializeField] private int mapSize = 256;
         [SerializeField] private float maxHeight = 8000f;
@@ -22,7 +25,7 @@ namespace TerraGen.Test
 
         [SerializeField] private MeshFilter meshFilter;
 
-        public void GenerateTerrain()
+        public IReadOnlyReactiveProperty<bool> GenerateTerrain()
         {
             mutatorData.position = new Vector2(transform.position.x, transform.position.z);
 
@@ -66,9 +69,25 @@ namespace TerraGen.Test
                 pointData = pointData
             };
 
+            var returned = new ReactiveProperty<bool>(false);
+
             var factory = new TerrainMeshFactory();
-            factory.GenerateTerrainMesh(terrainData)
-                .Subscribe(mesh => meshFilter.mesh = mesh);
+            if (useComputeShader)
+            {
+                meshFilter.mesh = factory.GenerateTerrainMesh(terrainData, meshMakerComputeShader);
+                returned.Value = true;
+            }
+            else
+            {
+                factory.GenerateTerrainMesh(terrainData)
+                    .Subscribe(mesh =>
+                    {
+                        meshFilter.mesh = mesh;
+                        returned.Value = true;
+                    });
+            }
+
+            return returned;
         }
 
         private IDisposable RunHeightmapShader(ref int[] minMax, ref float[] heightMap, int mapSize)
@@ -89,7 +108,7 @@ namespace TerraGen.Test
             Disposable.Create(minMaxBuffer.Release)
                 .AddTo(disposables);
 
-            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), heightMap.Length / 1024, 1, 1);
+            terrainComputeShader.Dispatch(terrainComputeShader.FindKernel("Generate"), heightMap.Length, 1, 1);
 
             mapBuffer.GetData(heightMap);
             minMaxBuffer.GetData(minMax);
@@ -117,7 +136,7 @@ namespace TerraGen.Test
 
             finalPassComputeShader.SetFloat("finalPass_GlobalScale", globalScale);
 
-            finalPassComputeShader.Dispatch(0, heightMap.Length / 1024, 1, 1);
+            finalPassComputeShader.Dispatch(0, heightMap.Length, 1, 1);
 
             finalMapBuffer.GetData(heightMap);
 

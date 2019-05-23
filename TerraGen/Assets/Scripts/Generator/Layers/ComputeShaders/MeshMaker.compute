@@ -1,0 +1,47 @@
+﻿#pragma kernel CSMain
+
+int mapSize;
+int lodMultiplier;
+StructuredBuffer<float> heightMap;
+
+RWStructuredBuffer<float3> verticies;
+RWStructuredBuffer<float2> uvs;
+RWStructuredBuffer<int> triangles;
+
+[numthreads(1,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    int index = id.x;
+    int x = index % mapSize;
+    int y = floor(index / mapSize);
+
+    float2 uv;
+    float3 vertex;
+
+    uv.x = vertex.x = x * lodMultiplier;
+    uv.y = vertex.z = y * lodMultiplier;
+
+    vertex.y = heightMap[index];
+
+    verticies[index] = vertex;
+    uvs[index] = uv;
+    
+    if (x < mapSize - 1 && y < mapSize - 1)
+    {
+        int baseTriangleIndex = index * 6;
+        
+        // i
+        // |\
+        // |_\
+        triangles[baseTriangleIndex + 2] = index;
+        triangles[baseTriangleIndex + 1] = index + mapSize;
+        triangles[baseTriangleIndex + 0] = index + mapSize + 1;
+
+        // i___
+        //  \ |
+        //   \|
+        triangles[baseTriangleIndex + 3] = index;
+        triangles[baseTriangleIndex + 4] = index + 1;
+        triangles[baseTriangleIndex + 5] = index + mapSize + 1;
+    }
+}

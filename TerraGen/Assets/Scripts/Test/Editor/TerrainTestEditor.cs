@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TerraGen.Test;
 using UnityEditor;
 using UnityEngine;
+using UniRx;
 
 namespace TerraGen.Test
 {
@@ -20,9 +21,13 @@ namespace TerraGen.Test
             {
                 var sw = new System.Diagnostics.Stopwatch();
                 sw.Start();
-                terrainTest.GenerateTerrain();
-                sw.Stop();
-                Debug.Log("Terrain generated in time: " + sw.ElapsedMilliseconds + "ms");
+                terrainTest.GenerateTerrain()
+                    .First(isDone => isDone)
+                    .Subscribe(_ =>
+                    {
+                        sw.Stop();
+                        Debug.Log("Terrain generated in time: " + sw.ElapsedMilliseconds + "ms");
+                    });
             }
             base.OnInspectorGUI();
         }
