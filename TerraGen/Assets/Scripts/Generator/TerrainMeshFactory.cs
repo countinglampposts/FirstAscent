@@ -39,8 +39,7 @@ namespace TerraGen.Generator
             Disposable.Create(uvsBuffer.Release)
                 .AddTo(disposables);
 
-            int[] triangles = new int[(mapSize - 1) * (mapSize - 1) * 2 * 6];
-            triangles = triangles.Select(_ => -1).ToArray();
+            int[] triangles = new int[(mapSize - 1) * (mapSize - 1) * 6];
             ComputeBuffer trianglesBuffer = new ComputeBuffer(triangles.Length, sizeof(int));
             trianglesBuffer.SetData(triangles);
             computeShader.SetBuffer(0, "triangles", trianglesBuffer);
@@ -82,7 +81,7 @@ namespace TerraGen.Generator
 
             Vector3[] verticies = new Vector3[size * size];
             Vector2[] uvs = new Vector2[verticies.Length];
-            int[] triangles = new int[(size - 1) * (size - 1) * 2 * 6];
+            int[] triangles = new int[(size - 1) * (size - 1) * 6];
 
             Thread thread = new Thread(() =>
             {
@@ -104,7 +103,9 @@ namespace TerraGen.Generator
 
                         if (x < size - 1 && y < size - 1)
                         {
-                            int baseTriangleIndex = index * 6;
+                            int triangleMapSize = size - 1;
+                            int usedIndex = x * triangleMapSize + y;
+                            int baseTriangleIndex = usedIndex * 6;
 
                             // |\
                             // |_\

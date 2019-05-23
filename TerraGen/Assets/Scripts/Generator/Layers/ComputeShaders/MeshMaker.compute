@@ -26,9 +26,12 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     verticies[index] = vertex;
     uvs[index] = uv;
     
-    if (x < mapSize - 1 && y < mapSize - 1)
+    int triangleMapSize = mapSize - 1;
+    
+    if (x < triangleMapSize && y < triangleMapSize)
     {
-        int baseTriangleIndex = index * 6;
+        int usedIndex = x * triangleMapSize + y;
+        int baseTriangleIndex = usedIndex * 6;
         
         // i
         // |\
@@ -39,7 +42,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
         // i___
         //  \ |
-        //   \|
+        //   \| 
         triangles[baseTriangleIndex + 3] = index;
         triangles[baseTriangleIndex + 4] = index + 1;
         triangles[baseTriangleIndex + 5] = index + mapSize + 1;
